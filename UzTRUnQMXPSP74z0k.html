@@ -1,0 +1,436 @@
+<html><head><base href="https://real.domain.com" target="_blank">
+<meta charset="UTF-8">
+<title>Elegant Login Page</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --spongebob-yellow: #FDD000;
+    --spongebob-brown: #A52A2A;
+    --patrick-pink: #FFA7B6;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(45deg, var(--spongebob-yellow), #87CEEB);
+    position: relative;
+    overflow: hidden;
+}
+
+/* New Abstract Background Styles */
+.abstract-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z' fill='%23FFA7B6' fill-opacity='0.2'/%3E%3C/g%3E%3C/svg%3E");
+    z-index: -2;
+}
+
+.abstract-shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.4;
+    animation: moveAround 20s infinite alternate;
+}
+
+@keyframes moveAround {
+    0% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(100px, 50px) scale(1.2); }
+    50% { transform: translate(50px, 100px) scale(0.8); }
+    75% { transform: translate(-50px, 50px) scale(1.1); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+.login-container {
+    cursor: move;
+    user-select: none;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border: 8px solid var(--spongebob-brown);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23FDD000'/%3E%3Ccircle cx='35' cy='40' r='8' fill='%23000'/%3E%3Ccircle cx='65' cy='40' r='8' fill='%23000'/%3E%3Cpath d='M35 70 Q50 80 65 70' stroke='%23000' stroke-width='3' fill='none'/%3E%3C/svg%3E") no-repeat center/contain;
+}
+
+.login-container.dragging {
+    transform: scale(1.02);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.47);
+}
+
+.drag-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 20px;
+    cursor: move;
+}
+
+.drop-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    min-height: 400px;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.drop-zone.drag-over {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--spongebob-brown);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--spongebob-brown);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group label {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--spongebob-brown);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.form-group input:focus + label,
+.form-group input:valid + label {
+    top: 0;
+    font-size: 0.8rem;
+    color: #4CAF50;
+}
+
+.submit-btn {
+    background: var(--spongebob-yellow);
+    color: var(--spongebob-brown);
+    font-weight: bold;
+    border: 3px solid var(--spongebob-brown);
+    padding: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+.background-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+    100% { transform: translateY(0px) rotate(360deg); }
+}
+
+.shape {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 15s infinite;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.login-method-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.method-btn {
+    background: var(--patrick-pink);
+    border: 2px solid var(--spongebob-brown);
+    color: var(--spongebob-brown);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.method-btn.active {
+    background: var(--spongebob-yellow);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success-checkmark {
+    display: none;
+    color: #4CAF50;
+    font-size: 50px;
+    animation: scale-in 0.3s ease-out;
+}
+
+@keyframes scale-in {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+/* Add bubbles animation */
+@keyframes bubble-float {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-100px) scale(1); opacity: 0; }
+}
+
+.bubble {
+    position: fixed;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    z-index: -1;
+}
+</style>
+</head>
+<body>
+    <div class="abstract-bg">
+        <div class="abstract-shape" style="background: radial-gradient(circle at center, #4CAF50, transparent); width: 500px; height: 500px; top: -100px; left: -100px;"></div>
+        <div class="abstract-shape" style="background: radial-gradient(circle at center, #2196F3, transparent); width: 400px; height: 400px; bottom: -50px; right: -50px;"></div>
+        <div class="abstract-shape" style="background: radial-gradient(circle at center, #9C27B0, transparent); width: 300px; height: 300px; top: 50%; left: 50%;"></div>
+    </div>
+
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <div class="success-checkmark">✓</div>
+    </div>
+
+    <div class="drop-zone">
+        <div class="login-container" draggable="true" id="draggableLogin">
+            <div class="drag-indicator">⋮</div>
+            <svg class="background-shapes" xmlns="http://www.w3.org/2000/svg">
+                <circle class="shape" cx="50" cy="50" r="20" fill="white" style="animation-delay: 0s;"/>
+                <rect class="shape" x="150" y="150" width="30" height="30" fill="white" style="animation-delay: 2s;"/>
+                <polygon class="shape" points="250,50 270,90 230,90" fill="white" style="animation-delay: 4s;"/>
+            </svg>
+            
+            <form class="login-form" onsubmit="return handleSubmit(event)">
+                <h1 style="color: var(--spongebob-brown); text-align: center; margin-bottom: 1rem;">Welcome Back</h1>
+                
+                <div class="login-method-selector">
+                    <button type="button" class="method-btn active" data-method="email">Email</button>
+                    <button type="button" class="method-btn" data-method="username">Username</button>
+                </div>
+
+                <div class="form-group" id="email-input">
+                    <input type="email" id="email" required>
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="form-group" id="username-input" style="display: none;">
+                    <input type="text" id="username" required>
+                    <label for="username">Username</label>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" required>
+                    <label for="password">Password</label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Log In</button>
+                
+                <p style="color: var(--spongebob-brown); text-align: center; margin-top: 1rem;">
+                    Don't have an account? 
+                    <a href="https://example.com/signup" style="color: #4CAF50; text-decoration: none;">Sign up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    const methodBtns = document.querySelectorAll('.method-btn');
+    const emailInput = document.getElementById('email-input');
+    const usernameInput = document.getElementById('username-input');
+
+    methodBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            methodBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const method = btn.dataset.method;
+            if (method === 'email') {
+                emailInput.style.display = 'block';
+                usernameInput.style.display = 'none';
+                document.getElementById('email').required = true;
+                document.getElementById('username').required = false;
+            } else {
+                emailInput.style.display = 'none';
+                usernameInput.style.display = 'block';
+                document.getElementById('email').required = false;
+                document.getElementById('username').required = true;
+            }
+        });
+    });
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        const spinner = document.querySelector('.spinner');
+        const checkmark = document.querySelector('.success-checkmark');
+        
+        loadingOverlay.style.display = 'flex';
+        spinner.style.display = 'block';
+        checkmark.style.display = 'none';
+        
+        // Play Spongebob laugh effect
+        const laughAudio = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAASAAAeMwAUFBQUFCIiIiIiIjAwMDAwPz8/Pz8/TU1NTU1NW1tbW1tbaWlpaWl3d3d3d3eFhYWFhYWTk5OTk5OgoKCgoK+vr6+vr72+vr6+zc3Nzc3N2tra2tra6Ojo6Oj39/f39/f///////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAHjOZTf9/AAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV');
+        
+        laughAudio.play();
+        
+        setTimeout(() => {
+            spinner.style.display = 'none';
+            checkmark.style.display = 'block';
+            
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+                event.target.reset();
+            }, 1000);
+            
+        }, 2000);
+        
+        return false;
+    }
+
+    function createBubbles() {
+        setInterval(() => {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 30 + 10;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * 100}%`;
+            bubble.style.animation = `bubble-float ${Math.random() * 3 + 2}s linear`;
+            document.body.appendChild(bubble);
+            
+            // Remove bubble after animation
+            setTimeout(() => bubble.remove(), 5000);
+        }, 300);
+    }
+
+    // Call the function when page loads
+    createBubbles();
+
+    const draggableLogin = document.getElementById('draggableLogin');
+    const dropZone = document.querySelector('.drop-zone');
+
+    draggableLogin.addEventListener('dragstart', (e) => {
+        draggableLogin.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', '');
+    });
+
+    draggableLogin.addEventListener('dragend', (e) => {
+        draggableLogin.classList.remove('dragging');
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+        dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        
+        const rect = dropZone.getBoundingClientRect();
+        const x = e.clientX - rect.left - (draggableLogin.offsetWidth / 2);
+        const y = e.clientY - rect.top - (draggableLogin.offsetHeight / 2);
+        
+        const maxX = dropZone.offsetWidth - draggableLogin.offsetWidth;
+        const maxY = dropZone.offsetHeight - draggableLogin.offsetHeight;
+        
+        const boundedX = Math.min(Math.max(0, x), maxX);
+        const boundedY = Math.min(Math.max(0, y), maxY);
+        
+        draggableLogin.style.position = 'absolute';
+        draggableLogin.style.left = `${boundedX}px`;
+        draggableLogin.style.top = `${boundedY}px`;
+    });
+
+    document.querySelectorAll('.shape').forEach((shape, index) => {
+        shape.style.left = `${Math.random() * 100}%`;
+        shape.style.top = `${Math.random() * 100}%`;
+        shape.style.animationDelay = `${index * 2}s`;
+    });
+    </script>
+</body>
+</html>
